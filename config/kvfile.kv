@@ -1,0 +1,404 @@
+#:import ScrollEffect kivy.effects.scroll.ScrollEffect
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+
+
+<Manager>:
+    transtion : FadeTransition
+    LoginScreen:
+        name :'loginscreen'
+    NetflixHome:
+        name:'netflixmenu'
+    ResultPage:
+        name:'resulpage'
+#################################################################
+<UserInput@TextInput>:
+    size_hint : None, None
+    size: 280,40
+    font_size: 20
+    multiline: False
+    background_color : 0.2,0.2,0.2,1
+    foreground_color: 1,1,1,1
+    bakcground_normal: app.roundborder
+    bakcground_active: app.roundborder
+
+<PopupWarning>:
+    size_hint:None,None
+    size: 232, 200
+    title: 'Login or password !'
+    separator_color: 1,0.3,0.2,1
+    BoxLayout:
+        orientation :'vertical'
+        Label:
+            text:' Sorry, we could find an account with that email address, Try again.\n'
+            size_hint: 1, 0.7
+            text_size: self.size
+        Botton:
+            pos_hint: {'center_x':0.5}
+            size_hint: 0.5, 0.3
+            text:'ok'
+            on_press: root.dismss()
+
+<LoginScreen>:
+    canvas:
+        Color:
+            rgba: 1,1,1,0.5
+        Rectangle:
+            source: app.background_login
+            size: self.size
+            pos:self.pos
+    BoxLayout:
+        size_hint: 1 , 0.12
+        pos_hint: {'top':1}
+        Image:
+            source: app.netflix_logo
+            pos_hint:{'center_y':0.5}
+            size_hint:None,None
+            size: 170,90
+    BoxLayout:
+        padding: self.width*0.3, self.height*0.12, self.width*0.3, self.height*0.12
+        FloatLayout:
+            canvas:
+                Color:
+                    rgba:0,0,0,0.6
+                Rectangle:
+                    size:self.size
+                    pos:self.pos
+            Label:
+                text:'Welcome\ncome Back'
+                font_name: app.netflix_font
+                font_size: 45
+                size_hint: None,None
+                size: self.texture_size[0], 130
+                pos_hint:{'x':0.075, 'center_y':0.85}
+            UserInput:
+                id : email
+                pos_hint:{'center_x':0.5, 'center_y':0.6}
+                focus: True
+                hint_text:'Email'
+                write_tab: False
+                on_text_validate: root.login_verification()
+            UserInput:
+                id : passw
+                pos_hint:{'center_x':0.5, 'center_y':0.47}
+                hint_text:'Password'
+                password: True
+                on_text: root.istab_pressed(self.text)
+                on_text_validate: root.login_verification()
+            Button:
+                text: 'Log in'
+                size_hint: None, None
+                size: 280, 40
+                pos_hint: {'center_x':0.5,'center_y':0.28}
+                background_color: 1,0.3,0.2,1
+                background_normal : app.roundborder
+                backgroumd_down: app.roundborder
+                bold: True
+                on_press: root.login_verification()
+            CheckBox:
+                id : checkbox
+                size_hint: None,None
+                size: 25 ,25
+                pos_hint:{'center_x':0.1, 'center_y':0.20}
+                canvas.before:
+                    Color:
+                        rgba: 0.3,0.3,0.3,1
+                    Rectangle:
+                        size: self.size[0] - 10 , self.size[1] -10
+                        pos: self.pos[0]+ 5 , self.pos[1] +5
+                color: 0,0,0,1
+            Label:
+                text:'Remember me'
+                size_hint: None,None
+                size: self.texture_size
+                pos_hint:{'center_x':0.35, 'center_y':0.20}
+            Label:
+                id : dica
+                pos_hint : {'center_x':0.5, 'cenyter_y':0.05}
+
+
+
+<CustomButton@Button>:
+    size_hint: None, 1
+    width: self.texture_size[0] + 20
+    background_color: 0,0,0,0
+    on_press: print(self.text)
+
+<ContentList>:
+    orientation: 'vertical'
+    size_hint: 1, None
+    height :self.minimum_height
+    Label:
+        id: label
+        size_hint: None,None
+        size: self.texture_size
+        bold: True
+        font_size: 25
+        color: 0.90,0.90,0.9, 1
+    ScrollView:
+        size_hint: 1,None
+        height: 150
+        do_scroll : True,True
+        effect_cls: ScrollEffect
+        bar_color: 1,1,1,0
+        bar_inactive_color: 1,1,1,0
+        scroll_type: ['content']
+        GridLayout:
+            id: grid
+            size_hint: None,None
+            size: self.minimum_width, 151
+            spacing: 7
+
+
+<SearchBox>:
+    Button:
+        id : searchbtn
+        size_hint: 0.08, 0.35
+        pos_hint:{'center_x':0.9,'center_y':0.5}
+        background_normal: app.search_btn
+        background_down: app.search_btn
+        border : 0,0,0,0
+
+<MenuHeader@BoxLayout>:
+    size_hint:1, 0.12
+    pos_hint :{'top':1}
+    canvas:
+        Color:
+            rgba: 0.15, 0.15,0.15,0.9
+        Rectangle:
+            size: self.size
+            pos:self.pos
+    Image:
+        source:app.netflix_logo
+        size_hint: None, 1.3
+        width:170
+        pos_hint:{'center_y':0.55}
+
+    CustomButton:
+        text: 'Home'
+        bold:True
+        on_press: app.root.current ='netflixmenu'
+    CustomButton:
+        text: 'Series'
+    CustomButton:
+        text: 'Filmes'
+    CustomButton:
+        text: 'My list'
+
+    SearchBox
+
+    FloatLayout:
+        size_hint: 0.3, 1
+        drop_menu: drop_menu.__self__
+        Button:
+            size_hint: 0.5 , 0.55
+            pos_hint:{'center_y':0.5, 'center_x':0.5}
+            on_parent: drop_menu.dismiss()
+            on_release: drop_menu.open(self)
+            Image:
+                source: app.dropmenu_icon
+                x: self.parent.x
+                y:self.parent.y
+                size_hint: None,None
+                size:40,40
+        DropDown:
+            id :drop_menu
+            pos_hint:{'center_x':.86}
+            auto_width: False
+            width: 170
+            on_select: print(args[1])
+            Label:
+                size_hint:1,None
+                height: self.texture_size[1]
+                text:' '*36 + '^'
+                halign: 'left'
+            BoxLayout:
+                orientation:'vertical'
+                size_hint: None,None
+                width: 170
+                height: 200
+                canvas.before:
+                    Color:
+                        rgba: 0,0,0,0.8
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+                BoxLayout:
+                    orientation:'vertical'
+                    padding: 10, 10, 10 , 10
+                    BoxLayout:
+                        Button:
+                            size_hint: None, None
+                            size: 37 , 37
+                            pos_hint:{'top':1}
+                            on_press: drop_menu.select('usuario:' +btn_user.text)
+                            Image:
+                                source: app.dropmenu_icon
+                                x: self.parent.x
+                                y:self.parent.y
+                                size_hint: None,None
+                                size:self.parent.size
+                        Button:
+                            id : btn_user
+                            pos_hint:{'center_y':0.6}
+                            baqckground_color:0,0,0,0,0
+                            text:'Netclone User'
+                            op_press: drop_menu.select('usuario: ' + self.text)
+                    Button:
+                        size_hint : 1, 0.5
+                        background_color : 1,1,1,0
+                        text:'Gerencia perssk'
+                        on_press: drop_menu.select('open:' + self .text)
+                BoxLayout:
+                    orientation:'vertical'
+                    padding: 10, 0, 10 , 5
+                    Button:
+                        background_color: 1,1,1,0
+                        bold: True
+                        text: 'Conta'
+                        text_size: self.size
+                        halign:'left'
+                        valign :'center'
+                        on_press: drop_menu.select('opcao: ' + self.text)
+                    Button:
+                        background_color: 1,1,1,0
+                        bold: True
+                        text: 'Popular on Netclone'
+                        text_size: self.size
+                        halign:'left'
+                        valign :'center'
+                        on_press: drop_menu.select('opcao: ' + self.text)
+                    Button:
+                        background_color: 1,1,1,0
+                        bold: True
+                        text: 'Séries'
+                        text_size: self.size
+                        halign:'left'
+                        valign :'center'
+                        on_press:
+                            drop_menu.dismiss()
+                            app.root.current = 'loginscreen'
+                            app.root.get_screen('loginscreen').ids.emaqil.focus = True
+
+
+
+<Banner>:
+    size_hint : 1.056 , None
+    height : 450
+    pos_hint : {'center_x':0.5}
+    FloatLayout:
+        pos:self.parent.pos
+        Image:
+            source:app.banner
+            size_hint:[1,None]
+            height: 550
+            pos_hint:{'top':1}
+            allow_stretch: True
+            keep_ratio : False
+        Label:
+            text: '\nUnlimited movies,\n TV shows, and more.'
+            font_name: app.netflix_font
+            bold:True
+            font_size:50
+            pos_hint:{'center_x':0.3, 'center_y':0.7}
+            color:1,1,1,1
+        Button:
+            size_hint: None,None
+            size: 140 ,50
+            pos_hint:{'center_x':0.12, 'center_y':0.43}
+            text: str(chr(187)) + 'to watch'
+            blod: True
+            color:1,1,1,1
+            background_color: 0,0,0,0.4
+            background_normal: app.roundborder
+            on_release: print(self.text + 'hiiiii')
+        Button:
+            size_hint: None,None
+            size: 140 ,50
+            pos_hint:{'center_x':0.3, 'center_y':0.43}
+            text: '+ Informtion'
+            blod: True
+            color:1,1,1,1
+            background_color: 0,0,0,0.4
+            background_normal: app.roundborder
+            on_release: print(self.text + 'hiiiii')
+
+        Label:
+            text:
+                '''
+                'Space adventurer Peter Quill becomes prey
+                'from bounty hunters after he steals the orb
+                'from a treacherous villain, Ronan. To escape danger,
+                'he makes an alliance with a group of four extraterrestrials.
+                '''.replace("'",'')
+            font_name: app.netflix_font
+            size:self.size
+            bold: True
+            font_size: 20
+            color:1,1,1,1
+            pos_hint: {'center_y':0.22, 'center_x':0.3}
+
+<NetflixHome>:
+    FloatLayout:
+        ScrollView:
+            id : scroll_home
+            size_hint: 1, 0.88
+            pos_hint:{'center_y':0.44}
+            bar_width:10
+            scroll_wheel_distance: 40
+            scroll_type: ['bars', 'content']
+            effect_cls: ScrollEffect
+            BoxLayout:
+                id :content
+                orientation: 'vertical'
+                size_hint:1, None
+                height: self.minimum_height
+                padding: 22, 0, 22, 10
+                canvas:
+                    Color:
+                        rgba: 0.15, 0.15,0.15,0.9
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+
+        MenuHeader
+
+
+<ResultPage>:
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: 0.15, 0.15,0.15,0.9
+            Rectangle:
+                size: self.size
+                pos:self.pos
+        Label:
+            id: searchtext
+            font_size: 28
+            size_hint: None,None
+            size: self.texture_size
+            pos_hint:{'center_y':0.83}
+        ScrollView:
+            id :scroll_result
+            size_hint : 1, 0.88
+            pos_hint:{'center_y':0.35}
+            bar_width: 10
+            scroll_wheel_distance: 40
+            scroll_type: ['bars', 'content']
+            effect_cls: ScrollEffect
+            StackLayout:
+                id : stack
+                spacing: 10
+                padding: 30,0,22,50
+                size_hint : 1,None
+                height:self.minimum_height +30
+                pos_hint:{'center_y':0.35}
+
+
+
+
+
+
+
+
+
+
